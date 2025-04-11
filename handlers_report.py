@@ -46,13 +46,10 @@ class LogMerger:
         for data in reports_data:
             for key, subkeys in data.items():
                 if key not in merged:
-                    merged[key] = subkeys
+                    merged[key] = {}
 
                 for sum_key, sum_subkey in subkeys.items():
-                    if sum_key not in merged[key]:
-                        merged[key][sum_key] = 0
-
-                    merged[key][sum_key] += sum_subkey
+                    merged[key][sum_key] = merged[key].get(sum_key, 0) + sum_subkey
                     count_element += sum_subkey
 
         return merged, count_element
