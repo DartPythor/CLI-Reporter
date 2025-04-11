@@ -14,12 +14,13 @@ class LogParser:
         self.pattern_extract = pattern_extract
         self.re_pattern = re.compile(pattern_extract)
 
-    def parse(self, line: str) -> tuple[str, str]:
+    def parse(self, line: str) -> tuple[str, str] | None:
         match = self.re_pattern.match(line)
-        if match:
-            level = match.group(1)
-            endpoint = match.group(2) or match.group(3)
-            return endpoint, level
+        if not match:
+            return None
+        level = match.group(1)
+        endpoint = match.group(2) or match.group(3)
+        return endpoint, level
 
 
 class CollectorData:
@@ -63,8 +64,10 @@ class ReportPrinter:
 
     def print_report(self, data: dict, total_requests: int = None):
         level_names = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-        size_back = max(len(handler) for handler in data.keys()) + self.column_step
-        header = ["HANDLER"] + [level for level in level_names]
+        size_back = (
+            max(len(handler) for handler in data.keys()) + self.column_step
+        )
+        header = ["HANDLER"] + level_names
         print(f"Total requests: {total_requests}")
         print(" ".join(f"{col:<{size_back}}" for col in header))
         print("-" * (size_back * len(header)))
@@ -86,10 +89,12 @@ class Report:
 
     def process_line(self, line: str) -> None:
         if not self.validator.is_valid(line):
-            return None
+            return
         data = self.parser.parse(line)
         self.collector.add(*data)
 
     def print_report(self) -> None:
         self.printer.print_report(self.collector.data, self.collector.count)
 
+
+__all__ = ()

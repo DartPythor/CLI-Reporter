@@ -1,9 +1,16 @@
 import argparse
-import multiprocessing
 from functools import partial
-import os
+import multiprocessing
+import pathlib
 
-from handlers_report import CollectorData, LogMerger, LogParser, LogValidator, Report, ReportPrinter
+from handlers_report import (
+    CollectorData,
+    LogMerger,
+    LogParser,
+    LogValidator,
+    Report,
+    ReportPrinter,
+)
 
 
 class ConfigFabric:
@@ -12,39 +19,49 @@ class ConfigFabric:
         config_report = {
             "handlers": {
                 "validator": LogValidator("django.request"),
-                "parser": LogParser(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}\s+"
-                                    r"(\w+)\s+django\.request:\s+"
-                                    r"(?:.*?(?:GET|POST|PUT|DELETE|PATCH)\s+(\S+)|.*?:\s+(\S+))"),
+                "parser": LogParser(
+                    r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}\s+"
+                    r"(\w+)\s+django\.request:\s+"
+                    r"(?:.*?(?:GET|POST|PUT|DELETE|PATCH)\s+(\S+)|.*?:\s+(\S+))",
+                ),
                 "collector": CollectorData(),
                 "printer": ReportPrinter(),
-            }
+            },
         }
         return config_report[report_name]
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Analyze Django application logs and generate reports.')
-    parser.add_argument('files', nargs='+', help='Paths to log files')
-    parser.add_argument('--report', required=True, choices=['handlers'], help='Type of report to generate')
+    parser = argparse.ArgumentParser(
+        description="Analyze Django application logs and generate reports.",
+    )
+    parser.add_argument("files", nargs="+", help="Paths to log files")
+    parser.add_argument(
+        "--report",
+        required=True,
+        choices=["handlers"],
+        help="Type of report to generate",
+    )
     return parser.parse_args()
 
 
 def validate_files(files):
     for file in files:
-        if not os.path.exists(file):
+        if not pathlib.Path(file).exists():
             raise FileNotFoundError(f"File not found: {file}")
 
 
 def process_single_file(file_path: str, config: str) -> dict:
     config = ConfigFabric.get(config)
     report = Report(config)
-    with open(file_path, "r", encoding="utf-8") as f:
+
+    with pathlib.Path(file_path).open("r", encoding="utf-8") as f:
         for line in f:
             report.process_line(line)
     return report.collector.data
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = parse_args()
     validate_files(args.files)
 
@@ -56,3 +73,6 @@ if __name__ == '__main__':
     merged_data, total = merger.merge(results)
 
     ReportPrinter().print_report(merged_data, total)
+
+
+__all__ = ()
