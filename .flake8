@@ -1,7 +1,7 @@
 [flake8]
 import-order-style = google
 inline-quotes = "
-application-import-names = handlers_report
+application-import-names = handlers_report, main
 exclude = ./venv/, ./.venv/
 max-line-length = 120
 max-complexity = 10
