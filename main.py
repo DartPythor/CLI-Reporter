@@ -61,7 +61,7 @@ def process_single_file(file_path: str, config: str) -> dict:
     return report.collector.data
 
 
-if __name__ == "__main__":
+def main():
     args = parse_args()
     validate_files(args.files)
 
@@ -73,6 +73,9 @@ if __name__ == "__main__":
     merged_data, total = merger.merge(results)
 
     ReportPrinter().print_report(merged_data, total)
+
+if __name__ == "__main__":
+    main()
 
 
 __all__ = ()
