@@ -63,6 +63,13 @@ class ReportPrinter:
 
     def print_report(self, data: dict, total_requests: int = None) -> None:
         level_names = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+        all_sum = {
+            "DEBUG": 0,
+            "INFO": 0,
+            "WARNING": 0,
+            "ERROR": 0,
+            "CRITICAL": 0,
+        }
         size_back = (
             max(len(handler) for handler in data.keys()) + self.column_step
         )
@@ -74,8 +81,13 @@ class ReportPrinter:
         for handler, levels in data.items():
             row = [handler]
             for level in level_names:
+                all_sum[level] += levels.get(level, 0)
                 row.append(str(levels.get(level, 0)))
             print(" ".join(f"{item:<{size_back}}" for item in row))
+        print(
+            " " * (size_back + 1)
+            + " ".join(f"{item:<{size_back}}" for item in all_sum.values()),
+        )
 
 
 class Report:
