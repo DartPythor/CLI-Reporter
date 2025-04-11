@@ -1,4 +1,5 @@
 import argparse
+from argparse import Namespace
 from functools import partial
 import multiprocessing
 import pathlib
@@ -31,7 +32,7 @@ class ConfigFabric:
         return config_report[report_name]
 
 
-def parse_args():
+def parse_args() -> Namespace:
     parser = argparse.ArgumentParser(
         description="Analyze Django application logs and generate reports.",
     )
@@ -45,7 +46,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def validate_files(files):
+def validate_files(files) -> None:
     for file in files:
         if not pathlib.Path(file).exists():
             raise FileNotFoundError(f"File not found: {file}")

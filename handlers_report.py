@@ -28,7 +28,7 @@ class CollectorData:
         self.data = {}
         self.count = 0
 
-    def add(self, key: str, value: str):
+    def add(self, key: str, value: str) -> None:
         if key not in self.data:
             self.data[key] = {}
         if value not in self.data[key]:
@@ -61,7 +61,7 @@ class ReportPrinter:
     def __init__(self, column_step: int = 5):
         self.column_step = column_step
 
-    def print_report(self, data: dict, total_requests: int = None):
+    def print_report(self, data: dict, total_requests: int = None) -> None:
         level_names = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
         size_back = (
             max(len(handler) for handler in data.keys()) + self.column_step
