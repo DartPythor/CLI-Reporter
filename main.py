@@ -74,6 +74,7 @@ def main():
 
     ReportPrinter().print_report(merged_data, total)
 
+
 if __name__ == "__main__":
     main()
 

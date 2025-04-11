@@ -49,7 +49,9 @@ class LogMerger:
                     merged[key] = {}
 
                 for sum_key, sum_subkey in subkeys.items():
-                    merged[key][sum_key] = merged[key].get(sum_key, 0) + sum_subkey
+                    merged[key][sum_key] = (
+                        merged[key].get(sum_key, 0) + sum_subkey
+                    )
                     count_element += sum_subkey
 
         return merged, count_element

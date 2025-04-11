@@ -2,10 +2,10 @@ import pytest
 
 from handlers_report import (
     CollectorData,
-    Report,
-    LogValidator,
     LogMerger,
     LogParser,
+    LogValidator,
+    Report,
     ReportPrinter,
 )
 from main import ConfigFabric, validate_files
@@ -92,9 +92,7 @@ def test_report_printer(capsys):
 
     captured = capsys.readouterr()
     assert "Total requests: 10" in captured.out
-    assert (
-        "HANDLER" in captured.out
-    )
+    assert "HANDLER" in captured.out
     assert "INFO" in captured.out
     assert "5" in captured.out
 
@@ -104,7 +102,7 @@ def test_report_processing(report_config):
     lines = [
         "2023-01-01 12:00:00,000 INFO django.request: GET /api",
         "2023-01-01 12:00:01,000 ERROR django.request: POST /login",
-        "Invalid line without pattern"
+        "Invalid line without pattern",
     ]
 
     for line in lines:
@@ -135,3 +133,5 @@ def test_validate_files_invalid():
     with pytest.raises(FileNotFoundError):
         validate_files(["nonexistent.log"])
 
+
+__all__ = ()
